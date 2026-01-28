@@ -79,10 +79,14 @@ Num     Type           Disp Enb Address            What
 ```bash
 disable 1  # Num == 1
 
-Enb = n    # Result
+# Result
+Enb = n
 
-disable 1 2  # Disable MULTIPLE breakpoints
-disable      # Disable ALL breakpoints
+# Disable MULTIPLE breakpoints
+disable 1 2
+
+# Disable ALL breakpoints
+disable      
 ```
 ## `delete`
 - Remove breakpoint permanently
@@ -204,6 +208,39 @@ print arr[3]
 print my_struct
 print my_struct.field
 print *ptr   # 💥 segmentation fault if ptr == NULL
+```
+
+# `display` and `undisplay`
+- Automatically printing expressions **every time the program stops(breakpoint, step, watchpoint)**.
+- `print x` → show once
+- `display x` → show every stop
+- `undisplay` → stop showing it
+
+Example: 
+```bash
+display x
+
+# Result, 1 == display ID
+1: x = 42
+
+# Display expressions
+display i
+display *ptr
+display arr[3]
+display s.field
+display x + y
+
+# List current displays
+info display
+
+# Result
+Auto-display expressions:
+1: x
+2: i
+3: *ptr
+
+# Remove ONE display
+undisplay 1
 ```
 
 # `whatis`
