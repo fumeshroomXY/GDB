@@ -196,6 +196,102 @@ until 150
 ```
 Stops when execution reaches line 150.
 
+
+# `backtrace`(or `bt`)
+- Prints **stack frames**, from the **current function** back to main (or thread start).
+
+Each frame = one function call.
+
+Example:
+```bash
+#0  crash() at foo.c:10
+#1  do_work() at bar.c:42
+#2  main() at main.c:8
+```
+- `#0` → **current function** (where execution stopped)
+- `#1` → caller of `#0`
+- `#2` → caller of `#1`
+- … and so on
+
+## Show function arguments
+```bash
+bt full
+
+# Result:
+#1  foo (x=3, y=0x7fffffffe2a0) at foo.c:20
+    local_var = 42
+```
+
+## Switch to a specific frame
+```bash
+frame 1
+```
+Now all commands (`info locals`, `print`, etc.) apply to that frame.
+
+## Move up / down the call stack
+```bash
+up
+down
+```
+
+## `info args`
+What arguments were passed to this function?
+```c
+info args
+
+int foo(int a, int b) {
+    int x = a + b;
+    ...
+}
+
+// Stopped inside foo:
+(gdb) info args
+a = 3
+b = 5
+```
+
+## `info locals`
+What local variables exist in this frame?
+```bash
+info locals
+
+x = 8
+tmp = 0x7fffffffe2a0
+```
+
+## `info frame`
+Metadata about the current stack frame
+```bash
+info frame
+
+Stack level 0, frame at 0x7fffffffe1c0:
+ rip = 0x401146 in foo (foo.c:10); saved rip = 0x401178
+ called by frame at 0x7fffffffe1f0
+ source language c.
+ Arglist at 0x7fffffffe1b0, args: a=3, b=5
+ Locals at 0x7fffffffe1a0
+```
+- **Stack level 0** → current function
+- **frame at** → base address of this frame
+- **`rip`** → instruction currently executing
+- **saved rip** → return address (where `ret` jumps)
+- **called by** → caller’s frame
+- **Arglist at** → where arguments live
+- **Locals at** → where locals live
+
+# `finish`
+Runs the program **until the current function returns**, then **stops in the caller**.
+```bash
+Run till exit from #0  foo (a=3) at foo.c:10
+0x0000000000401178 in main () at main.c:20
+Value returned is $1 = 42
+```
+This tells you:
+- Which function just returned
+- Where execution resumes
+- The return value (`$1`)
+
+
 # `print`(or `p`)
 - Inspect values in GDB
 
