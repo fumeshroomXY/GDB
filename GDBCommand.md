@@ -306,6 +306,64 @@ print my_struct.field
 print *ptr   # 💥 segmentation fault if ptr == NULL
 ```
 
+# `x`
+- **Examine raw memory at a given address**, using a format you choose.
+
+```bash
+x /[count][format][unit] address
+
+# Default settings
+x address
+```
+## `count`
+How many items to display.
+```bash
+x/4x addr     # show 4 items
+```
+
+## `format`
+How to display the value.
+| Format | Meaning          |
+| ------ | ---------------- |
+| `x`    | hexadecimal      |
+| `d`    | signed decimal   |
+| `u`    | unsigned decimal |
+| `o`    | octal            |
+| `t`    | binary           |
+| `c`    | character        |
+| `s`    | string           |
+| `i`    | instruction      |
+
+## `unit`
+Size of each item.
+| Unit | Size    |
+| ---- | ------- |
+| `b`  | 1 byte  |
+| `h`  | 2 bytes |
+| `w`  | 4 bytes |
+| `g`  | 8 bytes |
+
+## `address`
+The memory location you want to examine.  
+x always expects **an address**, not a value.
+```bash
+x 0x7fffffffe000
+x &var
+x ptr
+x $rsp
+x $rip
+x 5     # ❌ Wrong
+```
+
+## Examples
+```bash
+x/16xg $rsp  # Examine stack memory
+x/s ptr      # View a string
+x/10i $rip   # Inspect instructions near current execution
+x/x ptr      # Look at a pointer and what it points to
+```
+
+
 # `call`
 Invoke a function manually while the program is paused.
 ```bash
