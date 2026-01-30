@@ -306,6 +306,54 @@ print my_struct.field
 print *ptr   # 💥 segmentation fault if ptr == NULL
 ```
 
+# `call`
+Invoke a function manually while the program is paused.
+```bash
+call function_name(arguments)
+```
+- Call a function and see its return value
+```c
+int square(int x) {
+    return x * x;
+}
+(gdb) call square(5)
+$1 = 25
+```
+- Call a function that has side effects
+```c
+void reset_counter(void) {
+    counter = 0;
+}
+(gdb) call reset_counter()
+```
+Even though it returns `void`, the function **still runs**.
+- Call library functions
+```c
+(gdb) call strlen("hello")
+$2 = 5
+```
+- Call a function using program variables
+```
+(gdb) call process(node)
+```
+`node` is evaluated using the program’s current state.
+
+## Important warnings
+The function **really executes**
+- It may modify memory
+- It may allocate/free memory
+- It may lock mutexes or change global state
+
+So call is not “read-only debugging”.
+
+## Unsafe in some situations
+Avoid calling functions that:
+- depend on timing
+- acquire locks
+- perform I/O
+- expect to be called only once
+
+Calling such functions can **change program behavior** or even crash it.
 # `display` and `undisplay`
 - Automatically printing expressions **every time the program stops(breakpoint, step, watchpoint)**.
 - `print x` → show once
