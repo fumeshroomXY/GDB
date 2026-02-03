@@ -363,6 +363,24 @@ x/10i $rip   # Inspect instructions near current execution
 x/x ptr      # Look at a pointer and what it points to
 ```
 
+# `disassemble`
+- Show **assembly instructions** for a function or a region of memory
+
+```bash
+disassemble           # Shows the assembly of the function where the instruction pointer (RIP) currently is.
+disassemble main      # Disassemble main function
+```
+
+```c
+disassemble /m main   // Show C source + assembly interleaved(very useful)
+
+// Example
+x = y + 1;
+
+mov eax, DWORD PTR [rbp-4]
+add eax, 1
+```
+
 
 # `call`
 Invoke a function manually while the program is paused.
